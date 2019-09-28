@@ -58,7 +58,7 @@ public class OrderController {
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity createOffice(@Valid @RequestBody Order order) {
+  public ResponseEntity createOrder(@Valid @RequestBody Order order) {
     Order savedOrder = orderService.create(order);
 
     URI location = ServletUriComponentsBuilder.fromCurrentRequest()
