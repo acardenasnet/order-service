@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.naming.ServiceUnavailableException;
-import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +57,7 @@ public class OrderController {
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity createOrder(@Valid @RequestBody Order order) {
+  public ResponseEntity createOrder(@RequestBody Order order) {
     Order savedOrder = orderService.create(order);
 
     URI location = ServletUriComponentsBuilder.fromCurrentRequest()
