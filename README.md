@@ -48,5 +48,10 @@ Into the controller can see the following snippet:
 
 The method above returns all the instances registered in Consul, healthy and unhealthy, in the branch `load_balanced` I will explain how avoid to bring all the instances and only retrieve the healthies
 
+To test you create a new record in the database and then retrieve the resource:  ( I'm using the id = 1 just to illustrate, but you should use the correct id created)
 
+```shell script
+curl -v -X POST -H "Content-Type: application/json" -d '{"subtotal":"100", "coupon":"20DISCCOUNT"}' http://localhost:8080/
+curl -v -X GET  http://localhost:8080/1
+```
 
