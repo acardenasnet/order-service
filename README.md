@@ -23,6 +23,14 @@ After this you can start this service executing:
 mvn sprong-boot:run
 ````
 
+Remember set the name to your project:
+```yaml
+spring:
+    application:
+        name: order-service
+```
+
+The name that you use is the name that will use to register in consul, in this branch you only can run one instance of `order-service` at less locally due to by default the port to run the app is `8080`, in the branch `final`,  you will see the configuration complete and you will be able to run many instances of this.
 
 Into the controller can see the following snippet:
 
