@@ -4,7 +4,6 @@ import com.dou.javadevdaymx2019.orderservice.domain.Order;
 import com.dou.javadevdaymx2019.orderservice.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.naming.ServiceUnavailableException;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -30,9 +27,6 @@ public class OrderController {
   private OrderService orderService;
 
   @Autowired
-  private DiscoveryClient discoveryClient;
-
-  @Autowired
   private RestTemplate restTemplate;
 
   @GetMapping
@@ -41,15 +35,12 @@ public class OrderController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Order> getOrderById(@PathVariable Long id)
-      throws ServiceUnavailableException {
+  public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
 
     Order order = orderService.getById(id);
-    URI service = serviceUrl()
-        .map(s -> s.resolve(String.format("/%s", order.getCoupon())))
-        .orElseThrow(ServiceUnavailableException::new);
 
-    Double disccount = restTemplate.getForObject(service, Double.class);
+    Double disccount = restTemplate
+        .getForObject("http://coupon-service/{id}", Double.class, order.getCoupon());
     log.info("Disccount is : {}", disccount);
     order.setTotal(order.getSubtotal() - disccount);
 
@@ -68,10 +59,4 @@ public class OrderController {
     return ResponseEntity.created(location).build();
   }
 
-  public Optional<URI> serviceUrl() {
-    return discoveryClient.getInstances("coupon-service")
-        .stream()
-        .map(serviceInstance -> serviceInstance.getUri())
-        .findFirst();
-  }
 }
