@@ -54,3 +54,15 @@ To test you create a new record in the database and then retrieve the resource: 
 curl -v -X POST -H "Content-Type: application/json" -d '{"subtotal":"100", "coupon":"20DISCCOUNT"}' http://localhost:8080/
 curl -v -X GET  http://localhost:8080/1
 ```
+
+We change the configuration of this service to can register many instances into consul, also assign a dynamic port, due to the `api-gateway` will point to the service using consul.
+
+```yaml
+spring:
+    cloud:
+        consul:
+            discovery:
+                instance-id: ${spring.application.name}:${random.value}
+server:
+    port: 0
+```

@@ -15,3 +15,9 @@ spring:
                         non_contextual_creation: true
         hibernate:
             ddl-auto: create
+    cloud:
+        consul:
+            discovery:
+                instance-id: ${spring.application.name}:${random.value}
+server:
+    port: 0
