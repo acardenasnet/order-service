@@ -17,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -31,20 +32,15 @@ public class OrderController {
 
   @GetMapping
   public List<Order> getOrders() {
-    return orderService.getAll();
+    return orderService.getAll().stream()
+        .map(order -> updateTotal(order))
+        .collect(Collectors.toList());
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
-
     Order order = orderService.getById(id);
-
-    Double disccount = restTemplate
-        .getForObject("http://coupon-service/{id}", Double.class, order.getCoupon());
-    log.info("Disccount is : {}", disccount);
-    order.setTotal(order.getSubtotal() - disccount);
-
-    return ResponseEntity.ok(order);
+    return ResponseEntity.ok(updateTotal(order));
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -57,6 +53,15 @@ public class OrderController {
         .toUri();
 
     return ResponseEntity.created(location).build();
+  }
+
+  private Order updateTotal(final Order order) {
+    Double disccount = restTemplate
+        .getForObject("http://coupon-service/{id}", Double.class, order.getCoupon());
+    log.info("Disccount is : {}", disccount);
+    order.setTotal(order.getSubtotal() - disccount);
+
+    return order;
   }
 
 }
