@@ -4,7 +4,6 @@ import com.dou.javadevdaymx2019.orderservice.domain.Order;
 import com.dou.javadevdaymx2019.orderservice.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,7 +42,7 @@ public class OrderController {
     return ResponseEntity.ok(updateTotal(order));
   }
 
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping()
   public ResponseEntity createOrder(@RequestBody Order order) {
     Order savedOrder = orderService.create(order);
 
